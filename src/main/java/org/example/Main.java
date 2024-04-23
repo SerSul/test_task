@@ -22,7 +22,5 @@ public class Main {
         System.out.println(p4.addComponent(p6));
 
 
-
-
     }
 }
