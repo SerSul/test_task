@@ -1,11 +1,27 @@
 import org.example.Product;
+import org.junit.Rule;
 import org.junit.Test;
-import static org.junit.Assert.*;
+import org.junit.rules.Stopwatch;
+import org.junit.runner.Description;
 
+import static org.junit.Assert.*;
 
 public class ProductTest {
 
-    @Test
+    @Rule
+    public Stopwatch stopwatch = new Stopwatch() {
+        @Override
+        protected void succeeded(long nanos, Description description) {
+            System.out.println(description.getMethodName() + " выполнен за " + nanos / 1000000 + " мс");
+        }
+
+        @Override
+        protected void failed(long nanos, Throwable e, Description description) {
+            System.out.println(description.getMethodName() + " завершен с ошибкой за " + nanos / 1000000 + " мс");
+        }
+    };
+
+    @Test  //С кешем ~2 МС, без кеша ~6 МС
     public void testAllTrue() {
         Product p1 = new Product("Торт");
         Product p2 = new Product("Ванилин");
@@ -23,7 +39,6 @@ public class ProductTest {
         assertTrue(p3.addComponent(p6));
         assertTrue(p4.addComponent(p7));
         assertTrue(p4.addComponent(p8));
-
     }
 
     @Test
@@ -34,13 +49,11 @@ public class ProductTest {
         Product p4 = new Product("Вода");
         Product p5 = new Product("Пшеница");
 
-
         assertTrue(p1.addComponent(p2));
         assertTrue(p1.addComponent(p3));
         assertTrue(p1.addComponent(p4));
         assertFalse(p2.addComponent(p1));
         assertTrue(p2.addComponent(p5));
         assertFalse(p5.addComponent(p1));
-
     }
 }
